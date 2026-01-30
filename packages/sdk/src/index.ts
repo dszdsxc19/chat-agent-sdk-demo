@@ -1,10 +1,16 @@
 import { isZodLike } from "./utils";
 
-export interface ToolDefinition<T = any> {
+type InferSchemaInput<TResult> = TResult extends {
+  parse: (...args: any[]) => infer Output;
+}
+  ? Output
+  : unknown;
+
+export interface ToolDefinition<TParameters = any> {
   name: string;
   description?: string;
-  parameters: any; // We use any because we support multiple Zod versions via duck typing
-  execute: (args: T) => Promise<any>;
+  parameters: TParameters;
+  execute: (args: InferSchemaInput<TParameters>) => Promise<any>;
 }
 
 export interface MountOptions {
@@ -26,7 +32,7 @@ export class BridgeSDK {
     return BridgeSDK.instance;
   }
 
-  public registerTool<T>(tool: ToolDefinition<T>) {
+  public registerTool<TParameters>(tool: ToolDefinition<TParameters>) {
     // 1. Loose validation: Just check if it looks like Zod
     if (!isZodLike(tool.parameters)) {
       console.warn(
