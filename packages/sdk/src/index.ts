@@ -56,6 +56,10 @@ export class BridgeSDK {
   private pushCleanup: (() => void) | null = null;
 
   public static getInstance(): BridgeSDK {
+    if ((window as any).__ToolAgentSDK__) {
+      return (window as any).__ToolAgentSDK__;
+    }
+
     if (!BridgeSDK.instance) {
       BridgeSDK.instance = new BridgeSDK();
       (window as any).__ToolAgentSDK__ = BridgeSDK.instance;

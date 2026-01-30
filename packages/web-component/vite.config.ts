@@ -12,26 +12,11 @@ export default defineConfig({
       fileName: 'agent-widget',
     },
     rollupOptions: {
-      external: [
-        'react',
-        'react-dom',
-        'my-agent-sdk',
-        'zod',
-        '@assistant-ui/react',
-        '@assistant-ui/react-ui',
-        '@assistant-ui/react-ai-sdk',
-        'ai'
-      ],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'my-agent-sdk': 'MyAgentSDK',
-          '@assistant-ui/react': 'AssistantUI',
-          '@assistant-ui/react-ui': 'AssistantUIReactUI',
-          'ai': 'AI'
-        }
-      }
+      // Bundle all dependencies
+      external: [],
     }
+  },
+  define: {
+    'process.env.NODE_ENV': '"production"'
   }
 });
