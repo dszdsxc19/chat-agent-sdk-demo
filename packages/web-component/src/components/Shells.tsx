@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { type OpenOptions, type SidebarOptions } from 'my-agent-sdk';
+import { type FabModalOptions, type OpenOptions, type SidebarOptions } from 'my-agent-sdk';
 
 interface ShellProps {
   children: React.ReactNode;
@@ -16,8 +16,15 @@ const ChatIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
 );
 
-export const FabModalShell = ({ children }: ShellProps) => {
+export const FabModalShell = ({ children, displayMode }: ShellProps) => {
   const [isExpanded, setExpanded] = useState(true);
+  const options = displayMode as FabModalOptions;
+  const position = options.position ?? 'bottom-right';
+  const offsetX = options.offset?.x ?? 0;
+  const offsetY = options.offset?.y ?? 0;
+  const sideProp = position === 'bottom-left' ? 'left' : 'right';
+  const buttonOffset = 16;
+  const modalOffset = 80;
 
   const toggle = () => setExpanded(prev => !prev);
 
@@ -28,8 +35,12 @@ export const FabModalShell = ({ children }: ShellProps) => {
         {/* Modal / Chat Window */}
         {isExpanded && (
             <div
-              className="absolute bottom-20 right-4 w-[400px] h-[600px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-100px)] bg-white rounded-lg shadow-xl overflow-hidden pointer-events-auto flex flex-col border border-gray-200 animate-in fade-in slide-in-from-bottom-4 duration-200"
-              style={{ backgroundColor: 'white' }}
+              className="absolute w-[400px] h-[600px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-100px)] bg-white rounded-lg shadow-xl overflow-hidden pointer-events-auto flex flex-col border border-gray-200 animate-in fade-in slide-in-from-bottom-4 duration-200"
+              style={{
+                backgroundColor: 'white',
+                bottom: `${modalOffset + offsetY}px`,
+                [sideProp]: `${buttonOffset + offsetX}px`,
+              }}
             >
                 <div className="flex justify-between items-center p-3 border-b border-gray-100 bg-gray-50">
                     <span className="font-medium text-gray-700">Chat</span>
@@ -46,7 +57,11 @@ export const FabModalShell = ({ children }: ShellProps) => {
         {/* FAB Button */}
         <button
             onClick={toggle}
-            className="absolute bottom-4 right-4 w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-800 transition-transform hover:scale-105 pointer-events-auto z-50"
+            className="absolute w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-800 transition-transform hover:scale-105 pointer-events-auto z-50"
+            style={{
+              bottom: `${buttonOffset + offsetY}px`,
+              [sideProp]: `${buttonOffset + offsetX}px`,
+            }}
         >
             {isExpanded ? <CloseIcon /> : <ChatIcon />}
         </button>

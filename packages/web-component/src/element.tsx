@@ -14,30 +14,46 @@ export class AgentWidgetElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.root) {
+    if (!this.shadowRoot) {
       this.attachShadow({ mode: "open" });
+    }
 
+    const shadow = this.shadowRoot!;
+    const existingStyle = shadow.querySelector("style[data-agent-widget]");
+    if (!existingStyle) {
       const styleTag = document.createElement("style");
+      styleTag.dataset.agentWidget = "true";
       styleTag.textContent = styles;
-      this.shadowRoot!.appendChild(styleTag);
+      shadow.appendChild(styleTag);
+    }
 
-      const container = document.createElement("div");
+    let container = shadow.querySelector(
+      "div[data-agent-widget-root]",
+    ) as HTMLDivElement | null;
+    if (!container) {
+      container = document.createElement("div");
+      container.dataset.agentWidgetRoot = "true";
       container.style.height = "100%";
       container.style.width = "100%";
       container.style.display = "flex";
       container.style.flexDirection = "column";
-      this.shadowRoot!.appendChild(container);
-
-      this.root = createRoot(container);
-      this.render();
+      shadow.appendChild(container);
     }
+
+    if (!this.root) {
+      this.root = createRoot(container);
+    }
+
+    this.render();
   }
 
   disconnectedCallback() {
-    if (this.root) {
-      this.root.unmount();
-      this.root = null;
-    }
+    queueMicrotask(() => {
+      if (this.root && !this.isConnected) {
+        this.root.unmount();
+        this.root = null;
+      }
+    });
   }
 
   // Allow setting runtime programmatically
