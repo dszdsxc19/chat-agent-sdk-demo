@@ -10,6 +10,11 @@ import {
   AssistantRuntimeProvider,
   type AssistantRuntime,
 } from "@assistant-ui/react";
+import {
+  useChatRuntime,
+  AssistantChatTransport,
+} from "@assistant-ui/react-ai-sdk";
+import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 import { Thread } from "@assistant-ui/react-ui";
 import {
   FabModalShell,
@@ -18,16 +23,77 @@ import {
 } from "./components/Shells";
 
 interface ToolWidgetProps {
-  runtime: AssistantRuntime;
+  runtime?: AssistantRuntime;
+  apiEndpoint?: string | null;
   displayMode?: OpenOptions | null;
   onClose?: () => void;
 }
 
 export const ToolWidget = ({
   runtime,
+  apiEndpoint,
   displayMode,
   onClose = () => {},
 }: ToolWidgetProps) => {
+  if (runtime) {
+    return (
+      <InnerToolWidget
+        runtime={runtime}
+        displayMode={displayMode}
+        onClose={onClose}
+      />
+    );
+  }
+
+  if (apiEndpoint) {
+    return (
+      <AutomaticRuntimeWidget
+        apiEndpoint={apiEndpoint}
+        displayMode={displayMode}
+        onClose={onClose}
+      />
+    );
+  }
+
+  return <div style={{ padding: 20 }}>Waiting for runtime...</div>;
+};
+
+const AutomaticRuntimeWidget = ({
+  apiEndpoint,
+  displayMode,
+  onClose,
+}: {
+  apiEndpoint: string;
+  displayMode?: OpenOptions | null;
+  onClose: () => void;
+}) => {
+  const runtime = useChatRuntime({
+    transport: new AssistantChatTransport({
+      api: apiEndpoint,
+    }),
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+  });
+
+  return (
+    <InnerToolWidget
+      runtime={runtime}
+      displayMode={displayMode}
+      onClose={onClose}
+    />
+  );
+};
+
+interface InnerToolWidgetProps {
+  runtime: AssistantRuntime;
+  displayMode?: OpenOptions | null;
+  onClose: () => void;
+}
+
+const InnerToolWidget = ({
+  runtime,
+  displayMode,
+  onClose,
+}: InnerToolWidgetProps) => {
   const sdk = BridgeSDK.getInstance();
   const [tools, setTools] = useState<ToolDefinition[]>(sdk.getTools());
 
@@ -51,10 +117,6 @@ export const ToolWidget = ({
       return <ToolComponent key={tool.name} />;
     });
   }, [tools]);
-
-  if (!runtime) {
-    return <div style={{ padding: 20 }}>Waiting for runtime...</div>;
-  }
 
   const content = (
     <AssistantRuntimeProvider runtime={runtime}>

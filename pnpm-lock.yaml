@@ -89,6 +89,16 @@ importers:
         version: 7.3.1(@types/node@24.10.9)
 
   apps/playground/solvte-playground:
+    dependencies:
+      agent-widget:
+        specifier: workspace:*
+        version: link:../../../packages/web-component
+      my-agent-sdk:
+        specifier: workspace:*
+        version: link:../../../packages/sdk
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^7.0.0
@@ -6023,6 +6033,10 @@ packages:
     dependencies:
       zod: 4.3.6
     dev: true
+
+  /zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+    dev: false
 
   /zod@4.3.6:
     resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}

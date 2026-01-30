@@ -6,6 +6,7 @@ import styles from "./styles.css?inline";
 export class AgentWidgetElement extends HTMLElement {
   private root: Root | null = null;
   private _runtime: any = null;
+  private _apiEndpoint: string | null = null;
   private _displayMode: any = null;
   private _open: boolean = false;
 
@@ -66,6 +67,15 @@ export class AgentWidgetElement extends HTMLElement {
     return this._runtime;
   }
 
+  set apiEndpoint(value: string | null) {
+    this._apiEndpoint = value;
+    this.render();
+  }
+
+  get apiEndpoint() {
+    return this._apiEndpoint;
+  }
+
   set displayMode(value: any) {
     this._displayMode = value;
     this.render();
@@ -97,6 +107,7 @@ export class AgentWidgetElement extends HTMLElement {
         <React.StrictMode>
           <ToolWidget
             runtime={this._runtime}
+            apiEndpoint={this._apiEndpoint}
             displayMode={this._displayMode}
             onClose={this.handleClose}
           />

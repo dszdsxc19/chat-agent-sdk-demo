@@ -16,6 +16,7 @@ export interface ToolDefinition<TParameters = any> {
 export interface MountOptions {
   container?: HTMLElement; // Initial container, defaults to body if not provided
   runtime?: any;
+  apiEndpoint?: string;
 }
 
 export type WidgetMode = 'fab_modal' | 'sidebar' | 'container';
@@ -119,6 +120,10 @@ export class BridgeSDK {
    */
   public mount(options: MountOptions = {}) {
     this.ensureWidgetCreated(options.runtime);
+
+    if (this.widgetElement && options.apiEndpoint) {
+      (this.widgetElement as any).apiEndpoint = options.apiEndpoint;
+    }
 
     // Mount to specified container or body
     const container = options.container || document.body;
