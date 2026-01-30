@@ -28,7 +28,7 @@ export default function App() {
   const adapter = useMemo(() => {
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      run: async ({ messages }: { messages: any[] }) => {
+      run: async ({ messages }: { messages: readonly any[] }) => {
         const lastMessage = messages[messages.length - 1];
         console.log('Adapter run:', lastMessage);
 
