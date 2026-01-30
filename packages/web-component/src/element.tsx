@@ -6,6 +6,8 @@ import styles from "./styles.css?inline";
 export class AgentWidgetElement extends HTMLElement {
   private root: Root | null = null;
   private _runtime: any = null;
+  private _displayMode: any = null;
+  private _open: boolean = false;
 
   constructor() {
     super();
@@ -48,11 +50,40 @@ export class AgentWidgetElement extends HTMLElement {
     return this._runtime;
   }
 
+  set displayMode(value: any) {
+    this._displayMode = value;
+    this.render();
+  }
+
+  get displayMode() {
+    return this._displayMode;
+  }
+
+  set open(value: boolean) {
+    this._open = value;
+    this.render();
+  }
+
+  get open() {
+    return this._open;
+  }
+
+  private handleClose = () => {
+    // Dispatch a custom event so the SDK or host can listen to it
+    this.dispatchEvent(
+      new CustomEvent("close", { bubbles: true, composed: true }),
+    );
+  };
+
   private render() {
     if (this.root) {
       this.root.render(
         <React.StrictMode>
-          <ToolWidget runtime={this._runtime} />
+          <ToolWidget
+            runtime={this._runtime}
+            displayMode={this._displayMode}
+            onClose={this.handleClose}
+          />
         </React.StrictMode>,
       );
     }

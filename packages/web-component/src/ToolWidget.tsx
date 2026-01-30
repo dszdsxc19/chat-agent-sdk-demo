@@ -6,7 +6,11 @@ import {
 } from "@assistant-ui/react";
 import { Thread } from "@assistant-ui/react-ui";
 
-export const ToolWidget = ({ runtime }: { runtime: any }) => {
+export const ToolWidget = ({
+  runtime,
+  displayMode,
+  onClose = () => {},
+}: ToolWidgetProps) => {
   const sdk = BridgeSDK.getInstance();
   const [tools, setTools] = useState<ToolDefinition[]>(sdk.getTools());
 
@@ -32,14 +36,12 @@ export const ToolWidget = ({ runtime }: { runtime: any }) => {
   }, [tools]);
 
   if (!runtime)
-    return <div style={{ padding: 20, height: "100%" }}>Waiting for runtime...</div>;
+    return <div style={{ padding: 20 }}>Waiting for runtime...</div>;
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       {ToolComponents}
-      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-        <Thread />
-      </div>
+      <Thread />
     </AssistantRuntimeProvider>
   );
 };
