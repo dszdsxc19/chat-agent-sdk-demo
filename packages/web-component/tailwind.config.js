@@ -1,3 +1,6 @@
+import assistantUI from '@assistant-ui/react-ui/tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -9,5 +12,5 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [assistantUI(), tailwindcssAnimate],
 }

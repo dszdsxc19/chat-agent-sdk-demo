@@ -1,4 +1,4 @@
-import { isZodLike } from './utils';
+import { isZodLike } from "./utils";
 
 export interface ToolDefinition<T = any> {
   name: string;
@@ -29,7 +29,9 @@ export class BridgeSDK {
   public registerTool<T>(tool: ToolDefinition<T>) {
     // 1. Loose validation: Just check if it looks like Zod
     if (!isZodLike(tool.parameters)) {
-      console.warn(`[SDK] Tool ${tool.name} parameters do not look like a Zod schema.`);
+      console.warn(
+        `[SDK] Tool ${tool.name} parameters do not look like a Zod schema.`,
+      );
     }
 
     this.tools.set(tool.name, tool);
@@ -38,6 +40,24 @@ export class BridgeSDK {
 
   public getTools() {
     return Array.from(this.tools.values());
+  }
+
+  /**
+   * Returns a formatted list of all registered tools with their metadata
+   * Useful for debugging and displaying available tools
+   */
+  public listTools() {
+    const tools = Array.from(this.tools.values());
+    return {
+      count: tools.length,
+      tools: tools.map((tool) => ({
+        name: tool.name,
+        description: tool.description || "No description",
+        parametersType: tool.parameters?.constructor?.name || "Unknown",
+        hasZodSchema: isZodLike(tool.parameters),
+        execute: typeof tool.execute === "function",
+      })),
+    };
   }
 
   public async executeTool(name: string, args: any) {
@@ -59,7 +79,7 @@ export class BridgeSDK {
   }
 
   private notify() {
-    this.listeners.forEach(fn => fn());
+    this.listeners.forEach((fn) => fn());
   }
 
   /**
@@ -68,13 +88,15 @@ export class BridgeSDK {
    */
   public mount(options: MountOptions = {}) {
     if (this.widgetElement) {
-      console.warn('[SDK] Widget is already mounted.');
+      console.warn("[SDK] Widget is already mounted.");
       return;
     }
 
-    const tagName = 'agent-widget';
+    const tagName = "agent-widget";
     if (!customElements.get(tagName)) {
-      console.warn(`[SDK] Custom element <${tagName}> is not defined. Make sure to import the web component package.`);
+      console.warn(
+        `[SDK] Custom element <${tagName}> is not defined. Make sure to import the web component package.`,
+      );
     }
 
     this.widgetElement = document.createElement(tagName);
