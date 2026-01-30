@@ -3,6 +3,9 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:react-playground": "turbo run dev --filter=react-playground",
+    "build:sdk": "turbo run build --filter=sdk",
+    "build:web-component": "turbo run build --filter=web-component",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
