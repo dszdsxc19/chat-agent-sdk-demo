@@ -27,11 +27,13 @@ export default function App() {
 
   const adapter = useMemo(() => {
     return {
-      run: async ({ messages }: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      run: async ({ messages }: { messages: any[] }) => {
         const lastMessage = messages[messages.length - 1];
         console.log('Adapter run:', lastMessage);
 
         if (lastMessage.role === 'user') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const text = lastMessage.content.find((p: any) => p.type === 'text')?.text || '';
           if (text.toLowerCase().includes('submit')) {
             const args = { name: 'Alice', email: 'alice@example.com' };
