@@ -1,7 +1,7 @@
-import React from 'react';
-import { createRoot, type Root } from 'react-dom/client';
-import { ToolWidget } from './ToolWidget';
-import styles from './styles.css?inline';
+import React from "react";
+import { createRoot, type Root } from "react-dom/client";
+import { ToolWidget } from "./ToolWidget";
+import styles from "./styles.css?inline";
 
 export class AgentWidgetElement extends HTMLElement {
   private root: Root | null = null;
@@ -15,15 +15,17 @@ export class AgentWidgetElement extends HTMLElement {
 
   connectedCallback() {
     if (!this.root) {
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: "open" });
 
-      const styleTag = document.createElement('style');
+      const styleTag = document.createElement("style");
       styleTag.textContent = styles;
       this.shadowRoot!.appendChild(styleTag);
 
-      const container = document.createElement('div');
-      container.style.height = '100%';
-      container.style.width = '100%';
+      const container = document.createElement("div");
+      container.style.height = "100%";
+      container.style.width = "100%";
+      container.style.display = "flex";
+      container.style.flexDirection = "column";
       this.shadowRoot!.appendChild(container);
 
       this.root = createRoot(container);
@@ -68,8 +70,10 @@ export class AgentWidgetElement extends HTMLElement {
 
   private handleClose = () => {
     // Dispatch a custom event so the SDK or host can listen to it
-    this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));
-  }
+    this.dispatchEvent(
+      new CustomEvent("close", { bubbles: true, composed: true }),
+    );
+  };
 
   private render() {
     if (this.root) {
@@ -80,13 +84,13 @@ export class AgentWidgetElement extends HTMLElement {
             displayMode={this._displayMode}
             onClose={this.handleClose}
           />
-        </React.StrictMode>
+        </React.StrictMode>,
       );
     }
   }
 }
 
 // Check if already defined to avoid errors in HMR
-if (!customElements.get('agent-widget')) {
-  customElements.define('agent-widget', AgentWidgetElement);
+if (!customElements.get("agent-widget")) {
+  customElements.define("agent-widget", AgentWidgetElement);
 }

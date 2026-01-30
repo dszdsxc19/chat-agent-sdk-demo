@@ -59,7 +59,7 @@ The SDK implements a **"Universal Bridge"** pattern to achieve dependency decoup
 
 2. **Reference Passing**: Schema objects created by the host are passed by reference to the SDK and Web Components without cloning. The Web Component's UI library (e.g., assistant-ui) consumes these references directly.
 
-3. **Peer Dependencies**: The SDK declares `zod` as a peer dependency, not a direct dependency. This avoids bundling Zod and allows hosts to use any Zod v3.x version.
+3. **Peer Dependencies**: The SDK declares `zod` as a peer dependency, not a direct dependency. This avoids bundling Zod and allows hosts to use any Zod v4.x version.
 
 ### Data Flow
 
