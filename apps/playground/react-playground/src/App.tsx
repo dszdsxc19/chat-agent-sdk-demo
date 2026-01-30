@@ -161,6 +161,34 @@ export default function App() {
           >
             Hide
           </button>
+          <hr style={{ margin: "15px 0" }} />
+          <h3>🛠️ Test Tool Execution</h3>
+          <button
+            onClick={async () => {
+              const args = { name: "Alice", email: "alice@example.com" };
+              console.log("Executing submitForm with args:", args);
+              try {
+                const result = await sdk.executeTool("submitForm", args);
+                console.log("executeTool result:", result);
+                alert(`Tool executed successfully!\n\nResult: ${JSON.stringify(result, null, 2)}`);
+              } catch (error) {
+                console.error("executeTool error:", error);
+                alert(`Error executing tool: ${error instanceof Error ? error.message : String(error)}`);
+              }
+            }}
+            style={{
+              marginTop: "10px",
+              padding: "10px 20px",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+          >
+            Execute submitForm Tool
+          </button>
         </div>
       )}
 
