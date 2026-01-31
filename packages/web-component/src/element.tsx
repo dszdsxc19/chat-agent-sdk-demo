@@ -1,13 +1,15 @@
 import React from "react";
 import { createRoot, type Root } from "react-dom/client";
+import type { AssistantRuntime } from "@assistant-ui/react";
+import type { OpenOptions } from "my-agent-sdk";
 import { ToolWidget } from "./ToolWidget";
 import styles from "./styles.css?inline";
 
 export class AgentWidgetElement extends HTMLElement {
   private root: Root | null = null;
-  private _runtime: any = null;
+  private _runtime: AssistantRuntime | null = null;
   private _apiEndpoint: string | null = null;
-  private _displayMode: any = null;
+  private _displayMode: OpenOptions | null = null;
   private _open: boolean = false;
 
   constructor() {
@@ -58,12 +60,12 @@ export class AgentWidgetElement extends HTMLElement {
   }
 
   // Allow setting runtime programmatically
-  set runtime(value: any) {
+  set runtime(value: AssistantRuntime | null) {
     this._runtime = value;
     this.render();
   }
 
-  get runtime() {
+  get runtime(): AssistantRuntime | null {
     return this._runtime;
   }
 
@@ -76,12 +78,12 @@ export class AgentWidgetElement extends HTMLElement {
     return this._apiEndpoint;
   }
 
-  set displayMode(value: any) {
+  set displayMode(value: OpenOptions | null) {
     this._displayMode = value;
     this.render();
   }
 
-  get displayMode() {
+  get displayMode(): OpenOptions | null {
     return this._displayMode;
   }
 

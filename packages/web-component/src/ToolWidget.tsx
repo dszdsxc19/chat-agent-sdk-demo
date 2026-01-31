@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState, useMemo } from "react";
-import {
-  BridgeSDK,
-  type ToolDefinition,
-  type OpenOptions,
-} from "my-agent-sdk";
+import { BridgeSDK, type ToolDefinition, type OpenOptions } from "my-agent-sdk";
 import {
   makeAssistantTool,
   AssistantRuntimeProvider,
@@ -24,15 +19,14 @@ import {
 
 interface ToolWidgetProps {
   runtime?: AssistantRuntime;
-  apiEndpoint?: string | null;
+  apiEndpoint?: string | undefined;
   displayMode?: OpenOptions | null;
   onClose?: () => void;
 }
 
 export const ToolWidget = (props: ToolWidgetProps) => {
   if (props.runtime) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return <ToolWidgetContent runtime={props.runtime!} {...props} />;
+    return <ToolWidgetContent runtime={props.runtime} {...props} />;
   }
   if (props.apiEndpoint) {
     return (
@@ -70,7 +64,7 @@ const ToolWidgetContent = ({
   apiEndpoint,
   displayMode,
   onClose = () => {},
-}: ToolWidgetProps) => {
+}: ToolWidgetContentProps) => {
   if (runtime) {
     return (
       <InnerToolWidget
@@ -152,7 +146,7 @@ const InnerToolWidget = ({
       });
       return <ToolComponent key={tool.name} />;
     });
-  }, [tools]);
+  }, [tools, sdk]);
 
   const content = (
     <AssistantRuntimeProvider runtime={runtime}>
