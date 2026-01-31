@@ -24,7 +24,7 @@ import {
 
 interface ToolWidgetProps {
   runtime?: AssistantRuntime;
-  apiEndpoint?: string;
+  apiEndpoint?: string | null;
   displayMode?: OpenOptions | null;
   onClose?: () => void;
 }
@@ -67,9 +67,69 @@ interface ToolWidgetContentProps extends ToolWidgetProps {
 
 const ToolWidgetContent = ({
   runtime,
+  apiEndpoint,
   displayMode,
   onClose = () => {},
-}: ToolWidgetContentProps) => {
+}: ToolWidgetProps) => {
+  if (runtime) {
+    return (
+      <InnerToolWidget
+        runtime={runtime}
+        displayMode={displayMode}
+        onClose={onClose}
+      />
+    );
+  }
+
+  if (apiEndpoint) {
+    return (
+      <AutomaticRuntimeWidget
+        apiEndpoint={apiEndpoint}
+        displayMode={displayMode}
+        onClose={onClose}
+      />
+    );
+  }
+
+  return <div style={{ padding: 20 }}>Waiting for runtime...</div>;
+};
+
+const AutomaticRuntimeWidget = ({
+  apiEndpoint,
+  displayMode,
+  onClose,
+}: {
+  apiEndpoint: string;
+  displayMode?: OpenOptions | null;
+  onClose: () => void;
+}) => {
+  const runtime = useChatRuntime({
+    transport: new AssistantChatTransport({
+      api: apiEndpoint,
+    }),
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+  });
+
+  return (
+    <InnerToolWidget
+      runtime={runtime}
+      displayMode={displayMode}
+      onClose={onClose}
+    />
+  );
+};
+
+interface InnerToolWidgetProps {
+  runtime: AssistantRuntime;
+  displayMode?: OpenOptions | null;
+  onClose: () => void;
+}
+
+const InnerToolWidget = ({
+  runtime,
+  displayMode,
+  onClose,
+}: InnerToolWidgetProps) => {
   const sdk = BridgeSDK.getInstance();
   const [tools, setTools] = useState<ToolDefinition[]>(sdk.getTools());
 

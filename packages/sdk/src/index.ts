@@ -121,6 +121,10 @@ export class BridgeSDK {
   public mount(options: MountOptions = {}) {
     this.ensureWidgetCreated(options.runtime, options.apiEndpoint);
 
+    if (this.widgetElement && options.apiEndpoint) {
+      (this.widgetElement as any).apiEndpoint = options.apiEndpoint;
+    }
+
     // Mount to specified container or body
     const container = options.container || document.body;
     if (!this.widgetElement!.parentNode) {
