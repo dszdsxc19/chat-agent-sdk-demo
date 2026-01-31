@@ -172,6 +172,10 @@ importers:
         version: 3.2.4(typescript@5.9.3)
 
   packages/sdk:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       typescript:
         specifier: ~5.6.2
@@ -182,9 +186,6 @@ importers:
       vite-plugin-dts:
         specifier: ^4.3.0
         version: 4.5.4(typescript@5.6.3)(vite@5.4.21)
-      zod:
-        specifier: ^4.3.6
-        version: 4.3.6
 
   packages/web-component:
     dependencies:
@@ -209,6 +210,9 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.4(react@19.2.4)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.1
@@ -261,9 +265,6 @@ importers:
       vite-plugin-dts:
         specifier: ^4.3.0
         version: 4.5.4(@types/node@24.10.9)(typescript@5.9.3)(vite@5.4.21)
-      zod:
-        specifier: ^4.3.6
-        version: 4.3.6
 
 packages:
 
