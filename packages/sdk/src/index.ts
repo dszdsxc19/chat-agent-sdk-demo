@@ -119,7 +119,7 @@ export class BridgeSDK {
    * Initializes the widget instance (hidden).
    */
   public mount(options: MountOptions = {}) {
-    this.ensureWidgetCreated(options.runtime);
+    this.ensureWidgetCreated(options.runtime, options.apiEndpoint);
 
     if (this.widgetElement && options.apiEndpoint) {
       (this.widgetElement as any).apiEndpoint = options.apiEndpoint;
@@ -181,9 +181,10 @@ export class BridgeSDK {
 
   // --- Internal Helpers ---
 
-  private ensureWidgetCreated(runtime?: any): HTMLElement {
+  private ensureWidgetCreated(runtime?: any, apiEndpoint?: string): HTMLElement {
     if (this.widgetElement) {
        if (runtime) (this.widgetElement as any).runtime = runtime;
+       if (apiEndpoint) (this.widgetElement as any).apiEndpoint = apiEndpoint;
        return this.widgetElement;
     }
 
@@ -203,6 +204,9 @@ export class BridgeSDK {
 
     if (runtime) {
       (this.widgetElement as any).runtime = runtime;
+    }
+    if (apiEndpoint) {
+      (this.widgetElement as any).apiEndpoint = apiEndpoint;
     }
     // Initially hidden
     this.widgetElement.style.display = 'none';

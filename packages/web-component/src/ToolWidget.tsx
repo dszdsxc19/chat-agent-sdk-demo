@@ -29,7 +29,43 @@ interface ToolWidgetProps {
   onClose?: () => void;
 }
 
-export const ToolWidget = ({
+export const ToolWidget = (props: ToolWidgetProps) => {
+  if (props.runtime) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return <ToolWidgetContent runtime={props.runtime!} {...props} />;
+  }
+  if (props.apiEndpoint) {
+    return (
+      <ToolWidgetWithRuntimeCreation
+        apiEndpoint={props.apiEndpoint}
+        {...props}
+      />
+    );
+  }
+  return (
+    <div style={{ padding: 20 }}>Waiting for runtime or API endpoint...</div>
+  );
+};
+
+const ToolWidgetWithRuntimeCreation = ({
+  apiEndpoint,
+  ...props
+}: ToolWidgetProps & { apiEndpoint: string }) => {
+  const runtime = useChatRuntime({
+    transport: new AssistantChatTransport({
+      api: apiEndpoint,
+    }),
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+  });
+
+  return <ToolWidgetContent runtime={runtime} {...props} />;
+};
+
+interface ToolWidgetContentProps extends ToolWidgetProps {
+  runtime: AssistantRuntime;
+}
+
+const ToolWidgetContent = ({
   runtime,
   apiEndpoint,
   displayMode,
