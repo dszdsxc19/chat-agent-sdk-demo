@@ -13,6 +13,11 @@
 		"lint": "prettier --check .",
 		"format": "prettier --write ."
 	},
+	"dependencies": {
+		"agent-widget": "workspace:*",
+		"my-agent-sdk": "workspace:*",
+		"zod": "^3.24.1"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/kit": "^2.50.1",
