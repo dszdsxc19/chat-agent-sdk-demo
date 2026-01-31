@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, onUnmounted } from 'vue';
-import { BridgeSDK, type OpenOptions } from "my-agent-sdk";
+import { BridgeSDK, type OpenOptions, z } from "my-agent-sdk";
 import "agent-widget"; // Side effects
-import { z } from "zod";
 import BaseButton from './components/BaseButton.vue';
 
 // Types
@@ -93,7 +92,7 @@ const getOpenOptions = (mode: WidgetMode, container: HTMLElement | null): OpenOp
       return container ? { mode: 'container', container } : null;
     default:
       return null;
-  }
+    }
 };
 
 const executeTool = async (toolName: string, args: unknown) => {
