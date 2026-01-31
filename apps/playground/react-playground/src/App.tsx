@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { BridgeSDK, type OpenOptions } from "my-agent-sdk";
+import { BridgeSDK, type OpenOptions, z } from "my-agent-sdk";
 import "agent-widget"; // Import for side effects (custom element registration)
-import { z } from "zod";
-import {
-  useChatRuntime,
-  AssistantChatTransport,
-} from "@assistant-ui/react-ai-sdk";
-import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 
 const sdk = BridgeSDK.getInstance();
 
@@ -55,54 +49,48 @@ export default function App() {
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('container');
   const [isMounted, setIsMounted] = useState(true);
 
-  const runtime = useChatRuntime({
-    transport: new AssistantChatTransport({
-      api: "http://localhost:4111/agent/weatherAgent",
-    }),
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-  });
+  // We no longer instantiate the runtime here in React.
+  // Instead, we pass the API endpoint to the SDK, and the Web Component (which bundles its own React)
+  // instantiates its own runtime. This avoids "Duplicate React" issues.
+  const apiEndpoint = "http://localhost:4111/agent/weatherAgent";
 
   useEffect(() => {
-    if (runtime) {
-      // Mount widget using the SDK - initially closed
-      sdk.mount({ runtime });
+    // Mount widget using the SDK - initially closed
+    sdk.mount({ apiEndpoint });
 
-      console.log("\n=== Runtime Information ===");
-      console.log("Runtime Type:", runtime.constructor.name);
-      console.log("Runtime Object:", runtime);
-      console.log("=== Tools + Runtime Combined ===");
-      console.log(
-        JSON.stringify(
-          {
-            runtime: {
-              type: runtime.constructor.name,
-              hasRuntime: !!runtime,
-            },
-            tools: toolsInfo.tools,
+    console.log("\n=== Runtime Information ===");
+    console.log("Runtime configuration: API Endpoint only (Decoupled)");
+    console.log("API Endpoint:", apiEndpoint);
+    console.log("=== Tools + Runtime Combined ===");
+    console.log(
+      JSON.stringify(
+        {
+          runtime: {
+            type: "Decoupled (Web Component Internal)",
+            hasRuntime: false, // from Host perspective
           },
-          null,
-          2,
-        ),
-      );
-      console.log("=============================\n");
+          tools: toolsInfo.tools,
+        },
+        null,
+        2,
+      ),
+    );
+    console.log("=============================\n");
 
-      return () => {
-        sdk.unmount();
-      };
-    }
-  }, [runtime]);
+    return () => {
+      sdk.unmount();
+    };
+  }, []);
 
   // Update widget when mode changes
   useEffect(() => {
-    if (!runtime) return;
-
     const options = getOpenOptions(widgetMode, embedContainerRef.current);
     if (options) {
       sdk.open(options);
     } else {
       sdk.close();
     }
-  }, [widgetMode, runtime]);
+  }, [widgetMode]);
 
   const getOpenOptions = (mode: WidgetMode, container: HTMLElement | null): OpenOptions | null => {
     switch (mode) {
@@ -157,14 +145,12 @@ export default function App() {
     // Remount after 1 second
     setTimeout(() => {
       console.log('Remounting widget...');
-      if (runtime) {
-        sdk.mount({ runtime });
-        setIsMounted(true);
-        // Re-apply current mode
-        const options = getOpenOptions(widgetMode, embedContainerRef.current);
-        if (options) {
-          sdk.open(options);
-        }
+      sdk.mount({ apiEndpoint });
+      setIsMounted(true);
+      // Re-apply current mode
+      const options = getOpenOptions(widgetMode, embedContainerRef.current);
+      if (options) {
+        sdk.open(options);
       }
     }, 1000);
   };
@@ -464,7 +450,7 @@ export default function App() {
           <div style={{ marginBottom: "16px" }}>
             <p style={{ margin: "0 0 4px", fontWeight: "bold", fontSize: "12px" }}>Runtime:</p>
             <p style={{ margin: 0, color: "#28a745" }}>
-              {runtime ? "✅ Connected" : "⏳ Loading..."}
+              {isMounted ? "✅ Connected" : "⏳ Loading..."}
             </p>
           </div>
           <div style={{ marginBottom: "16px" }}>

@@ -61,9 +61,9 @@ const ToolWidgetWithRuntimeCreation = ({
   return <ToolWidgetContent runtime={runtime} {...props} />;
 };
 
-interface ToolWidgetContentProps extends ToolWidgetProps {
-  runtime: AssistantRuntime;
-}
+// interface ToolWidgetContentProps extends ToolWidgetProps {
+//   runtime: AssistantRuntime;
+// }
 
 const ToolWidgetContent = ({
   runtime,
