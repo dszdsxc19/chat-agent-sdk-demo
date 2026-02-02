@@ -25,7 +25,7 @@
     "@assistant-ui/react": "^0.12.3",
     "@assistant-ui/react-ai-sdk": "^1.3.3",
     "@assistant-ui/react-ui": "^0.2.1",
-    "ai": "^6.0.61",
+    "ai": "^5.0.124",
     "my-agent-sdk": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -33,7 +33,7 @@
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
-    "zod": "^4.0.0"
+    "zod": "^4.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -16,6 +16,7 @@ export interface ToolDefinition<TParameters = any> {
 export interface MountOptions {
   container?: HTMLElement;
   runtime?: any; // For passing the runtime instance for testing or advanced scenarios
+  api?: string;
 }
 
 export class BridgeSDK {
@@ -109,6 +110,10 @@ export class BridgeSDK {
 
     if (options.runtime) {
       (this.widgetElement as any).runtime = options.runtime;
+    }
+
+    if (options.api) {
+      (this.widgetElement as any).api = options.api;
     }
 
     const container = options.container || document.body;

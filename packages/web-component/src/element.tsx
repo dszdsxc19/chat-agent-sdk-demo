@@ -1,14 +1,19 @@
 import React from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { ToolWidget } from "./ToolWidget";
+import { ToolWidget, ToolWidgetWithRuntime } from "./ToolWidget";
 import styles from "./styles.css?inline";
 
 export class AgentWidgetElement extends HTMLElement {
   private root: Root | null = null;
   private _runtime: any = null;
+  private _api: string | undefined;
 
   constructor() {
     super();
+  }
+
+  static get observedAttributes() {
+    return ["api"];
   }
 
   connectedCallback() {
@@ -38,6 +43,17 @@ export class AgentWidgetElement extends HTMLElement {
     }
   }
 
+  attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ) {
+    if (name === "api" && oldValue !== newValue) {
+      this._api = newValue ?? undefined;
+      this.render();
+    }
+  }
+
   // Allow setting runtime programmatically
   set runtime(value: any) {
     this._runtime = value;
@@ -48,11 +64,31 @@ export class AgentWidgetElement extends HTMLElement {
     return this._runtime;
   }
 
+  set api(value: string | null) {
+    if (value === null || value === undefined) {
+      if (this.hasAttribute("api")) {
+        this.removeAttribute("api");
+      }
+    } else if (this.getAttribute("api") !== value) {
+      this.setAttribute("api", value);
+    }
+  }
+
+  get api() {
+    return this._api;
+  }
+
   private render() {
     if (this.root) {
+      const runtime = this._runtime;
+      const api = this._api;
       this.root.render(
         <React.StrictMode>
-          <ToolWidget runtime={this._runtime} />
+          {runtime ? (
+            <ToolWidget runtime={runtime} />
+          ) : (
+            <ToolWidgetWithRuntime api={api} />
+          )}
         </React.StrictMode>,
       );
     }

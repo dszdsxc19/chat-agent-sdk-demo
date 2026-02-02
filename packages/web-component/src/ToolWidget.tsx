@@ -5,6 +5,13 @@ import {
   AssistantRuntimeProvider,
 } from "@assistant-ui/react";
 import { Thread } from "@assistant-ui/react-ui";
+import {
+  AssistantChatTransport,
+  useChatRuntime,
+} from "@assistant-ui/react-ai-sdk";
+import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
+
+const DEFAULT_API = "http://localhost:4111/agent/weatherAgent";
 
 export const ToolWidget = ({ runtime }: { runtime: any }) => {
   const sdk = BridgeSDK.getInstance();
@@ -42,4 +49,18 @@ export const ToolWidget = ({ runtime }: { runtime: any }) => {
       </div>
     </AssistantRuntimeProvider>
   );
+};
+
+export const ToolWidgetWithRuntime = ({ api }: { api?: string }) => {
+  const transport = useMemo(
+    () => new AssistantChatTransport({ api: api ?? DEFAULT_API }),
+    [api],
+  );
+
+  const runtime = useChatRuntime({
+    transport,
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+  });
+
+  return <ToolWidget runtime={runtime} />;
 };

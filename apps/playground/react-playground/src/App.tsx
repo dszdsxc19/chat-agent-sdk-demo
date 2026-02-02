@@ -2,11 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { BridgeSDK } from "my-agent-sdk";
 import "agent-widget"; // Import for side effects (custom element registration)
 import { z } from "zod";
-import {
-  useChatRuntime,
-  AssistantChatTransport,
-} from "@assistant-ui/react-ai-sdk";
-import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 // import '@assistant-ui/react/styles/index.css';
 
 const sdk = BridgeSDK.getInstance();
@@ -52,31 +47,21 @@ export default function App() {
     error?: string;
   } | null>(null);
 
-  const runtime = useChatRuntime({
-    transport: new AssistantChatTransport({
-      api: "http://localhost:4111/agent/weatherAgent",
-    }),
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-  });
-
   useEffect(() => {
-    if (containerRef.current && runtime) {
+    if (containerRef.current) {
       // Mount widget using the SDK
       sdk.mount({
         container: containerRef.current,
-        runtime: runtime,
+        api: "http://localhost:4111/agent/weatherAgent",
       });
 
-      console.log("\n=== Runtime Information ===");
-      console.log("Runtime Type:", runtime.constructor.name);
-      console.log("Runtime Object:", runtime);
       console.log("=== Tools + Runtime Combined ===");
       console.log(
         JSON.stringify(
           {
             runtime: {
-              type: runtime.constructor.name,
-              hasRuntime: !!runtime,
+              type: "web-component",
+              hasRuntime: true,
             },
             tools: toolsInfo.tools,
           },
@@ -90,7 +75,7 @@ export default function App() {
         sdk.unmount();
       };
     }
-  }, [runtime]);
+  }, []);
 
   const executeTool = async (toolName: string, args: unknown) => {
     setActiveTool(toolName);
